@@ -11,76 +11,79 @@
     OA
 </body>
 <script>
-    const
-        pars = new URLSearchParams(window.location.search),
-        p_code = pars.get('code'),
-        user_name = window.location.host.match(/(.*)\.github\.io/);
+    (async() => {
+        const
+            pars = new URLSearchParams(window.location.search),
+            p_code = pars.get('code'),
+            user_name = window.location.host.match(/(.*)\.github\.io/);
 
-    if (user_name) {
-        user_name = user_name[1];
-    }
+        if (user_name) {
+            user_name = user_name[1];
+        }
 
-    if (!user_name) {
-        console.log("unable to get username abort");
-    }
+        if (!user_name) {
+            console.log("unable to get username abort");
+			return;
+        }
 
-    if (p_code) {
-        let token = await get_token(p_code);
-    }
+        if (p_code) {
+            let token = await get_token(p_code);
+        }
 
-    async function get_token(code) {
-        const api_url = "https://github.com/login/oauth/access_token",
-            cid = "74ffd8ddbace9443fb22",
-            cs = "M2Q2Y2IxMzE4NjcxYmQxZThjOWZhODY5MmI0ZGYxZjU0ZTAzNzBiZQ==",
-            headers = new Headers({
-                "Accept": "application/json",
-            }),
-            data = {
-                client_id: cid,
-                client_secret: atob(cs),
-                code: code,
-                redirect_uri: `https://${user_name}.github.io/su/oa.html`
-            },
-            config = {
-                method: "GET",
-                headers: headers,
-                body: data,
-                redirect: "follow",
-            },
-            token = null;
+        async function get_token(code) {
+            const api_url = "https://github.com/login/oauth/access_token",
+                cid = "74ffd8ddbace9443fb22",
+                cs = "M2Q2Y2IxMzE4NjcxYmQxZThjOWZhODY5MmI0ZGYxZjU0ZTAzNzBiZQ==",
+                headers = new Headers({
+                    "Accept": "application/json",
+                }),
+                data = {
+                    client_id: cid,
+                    client_secret: atob(cs),
+                    code: code,
+                    redirect_uri: `https://${user_name}.github.io/su/oa.html`
+                },
+                config = {
+                    method: "GET",
+                    headers: headers,
+                    body: data,
+                    redirect: "follow",
+                },
+                token = null;
 
-        fetch(api_url, config)
-            .then(res => res.json())
-            .then(result => console.log(result))
-            .catch(error => console.log('error', error));
-    }
+            fetch(api_url, config)
+                .then(res => res.json())
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));
+        }
 
-    function create_issue(token, url) {
-        const repo_name = "su-db",
-            api_url = `https://api.github.com/repos/${user_name}/${repo_name}/issues`;
+        function create_issue(token, url) {
+            const repo_name = "su-db",
+                api_url = `https://api.github.com/repos/${user_name}/${repo_name}/issues`;
 
-        //create issue
-        let headers = new Headers({
-                "Accept": "application/vnd.github.v3+json",
-                "Authorization": token,
-                "Content-Type": "application/json",
-            }),
-            data = {
-                "title": url, // issue title
-                "body": "this is creat by app",
-            },
-            config = {
-                method: "POST",
-                headers: headers,
-                body: data,
-                redirect: "follow",
-            };
+            //create issue
+            let headers = new Headers({
+                    "Accept": "application/vnd.github.v3+json",
+                    "Authorization": token,
+                    "Content-Type": "application/json",
+                }),
+                data = {
+                    "title": url, // issue title
+                    "body": "this is creat by app",
+                },
+                config = {
+                    method: "POST",
+                    headers: headers,
+                    body: data,
+                    redirect: "follow",
+                };
 
-        fetch(api_url, config)
-            .then(res => res.json())
-            .then(result => console.log(result))
-            .catch(error => console.log('error', error));
-    }
+            fetch(api_url, config)
+                .then(res => res.json())
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));
+        }
+    })();
 </script>
 
 </html>
