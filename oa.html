@@ -31,7 +31,7 @@
         }
 
         async function get_token(code) {
-            const api_url = "https://github.com/login/oauth/access_token",
+            const api_url = "https://github.com/login/oauth/access_token?",
                 cid = "74ffd8ddbace9443fb22",
                 cs = "M2Q2Y2IxMzE4NjcxYmQxZThjOWZhODY5MmI0ZGYxZjU0ZTAzNzBiZQ==",
                 headers = new Headers({
@@ -46,12 +46,10 @@
                 config = {
                     method: "GET",
                     headers: headers,
-                    body: data,
-                    redirect: "follow",
                 },
                 token = null;
 
-            fetch(api_url, config)
+            fetch(api_url + new URLSearchParams(data), config)
                 .then(res => res.json())
                 .then(result => console.log(result))
                 .catch(error => console.log('error', error));
