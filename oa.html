@@ -10,6 +10,21 @@
 <body>
     OA
 </body>
+<script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-auth.js"></script>
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDW8RQcC6kjicXm1otJ4vbtyzZXovy7OM8",
+        authDomain: "azur-lane-fleet-tool.firebaseapp.com",
+        projectId: "azur-lane-fleet-tool",
+        storageBucket: "azur-lane-fleet-tool.appspot.com",
+        messagingSenderId: "83250372184",
+        appId: "1:83250372184:web:d91e16ad0e55900b3f342d",
+        measurementId: "G-EWKSWT1DBM"
+    };
+    firebase.initializeApp(firebaseConfig);
+</script>
+
 <script>
     (async() => {
         const
@@ -36,6 +51,7 @@
                 cs = "M2Q2Y2IxMzE4NjcxYmQxZThjOWZhODY5MmI0ZGYxZjU0ZTAzNzBiZQ==",
                 headers = new Headers({
                     "Accept": "application/json",
+                    'Content-Type': "application/x-www-form-urlencoded"
                 }),
                 data = {
                     client_id: cid,
@@ -44,7 +60,7 @@
                     redirect_uri: `https://${user_name}.github.io/su/oa.html`
                 },
                 config = {
-                    method: "GET",
+                    method: "POST",
                     headers: headers,
                 },
                 token = null;
