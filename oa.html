@@ -22,7 +22,6 @@
 
     if (!user_name) {
         console.log("unable to get username abort");
-        return 0;
     }
 
     if (p_code) {
@@ -34,7 +33,7 @@
             cid = "74ffd8ddbace9443fb22",
             cs = "M2Q2Y2IxMzE4NjcxYmQxZThjOWZhODY5MmI0ZGYxZjU0ZTAzNzBiZQ==",
             headers = new Headers({
-                "Accept": "application/vnd.github.v3+json",
+                "Accept": "application/json",
             }),
             data = {
                 client_id: cid,
