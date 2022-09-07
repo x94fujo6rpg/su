@@ -51,12 +51,13 @@
             var isInvalidUrl =
               message === "Not Found" ||
               !title ||
-              !isUrl(title) ||
-              url.hostname === location.hostname;
+              !isUrl(title);
 
             if (isInvalidUrl) {
-              //location.replace(homepage);
+              console.log("invalid url", {payload, message, title});
+              location.replace(homepage);
             } else {
+              console.log(`redirect to url [${title}]`);
               location.replace(title);
             }
           } catch (e) {
@@ -70,7 +71,6 @@
         xhr.open("GET", GITHUB_ISSUES_LINK + issueNumber);
         xhr.send();
       }
-
       redirect();
     </script>
   </head>
