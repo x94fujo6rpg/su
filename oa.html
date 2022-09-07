@@ -29,7 +29,7 @@
     (async() => {
         const
             pars = new URLSearchParams(window.location.search),
-            p_code = pars.get('code');
+            url = pars.get('url');
         let user_name = window.location.host.match(/(.*)\.github\.io/);
 
         if (user_name) {
@@ -41,54 +41,69 @@
             return;
         }
 
-        if (p_code) {
-            let token = await get_token(p_code);
+        if (url) {
+            let token = await get_token_firebase();
+            if (!token) {
+                throw Error("unable to get github token");
+            } else {
+                url = decodeURIComponent(url);
+                await create_issue(token, url);
+            }
         }
 
-        async function get_token(code) {
-            const api_url = "https://github.com/login/oauth/access_token?",
-                cid = "74ffd8ddbace9443fb22",
-                cs = "M2Q2Y2IxMzE4NjcxYmQxZThjOWZhODY5MmI0ZGYxZjU0ZTAzNzBiZQ==",
-                headers = new Headers({
-                    "Accept": "application/json",
-                    'Content-Type': "application/x-www-form-urlencoded"
-                }),
-                data = {
-                    client_id: cid,
-                    client_secret: atob(cs),
-                    code: code,
-                    redirect_uri: `https://${user_name}.github.io/su/oa.html`
-                },
-                config = {
-                    method: "POST",
-                    headers: headers,
-                },
-                token = null;
-
-            fetch(api_url + new URLSearchParams(data), config)
-                .then(res => res.json())
-                .then(result => console.log(result))
-                .catch(error => console.log('error', error));
+        async function get_token_firebase() {
+            const providerGithub = new firebase.auth.GithubAuthProvider();
+            try {
+                let result = await firebase.auth().signInWithPopup(providerGithub),
+                    credential = result.credential,
+                    token = credential.accessToken,
+                    user = result.user;
+                console.log({
+                    credential,
+                    token,
+                    user,
+                });
+                return {
+                    credential,
+                    token,
+                    user,
+                };
+            } catch (error) {
+                let {
+                    code,
+                    message,
+                    email,
+                    credential
+                } = error;
+                console.log({
+                    code,
+                    message,
+                    email,
+                    credential
+                });
+                return false;
+            }
         }
 
-        function create_issue(token, url) {
-            const repo_name = "su-db",
-                api_url = `https://api.github.com/repos/${user_name}/${repo_name}/issues`;
-
-            //create issue
+        async function create_issue(token, url) {
+            const target_repo_name = "su-db",
+                api_url = `https://api.github.com/repos/${user_name}/${target_repo_name}/issues`;
             let headers = new Headers({
                     "Accept": "application/vnd.github.v3+json",
-                    "Authorization": token,
+                    "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
                 }),
-                data = {
-                    "title": url, // issue title
-                    "body": "this is creat by app",
+                issue = {
+                    title: url, // issue title
+                    body: "this is create by app",
+                    assignees: [],
+                    labels: [],
+                    milestone: null,
                 },
                 config = {
                     method: "POST",
                     headers: headers,
-                    body: data,
+                    body: JSON.stringify(issue),
                     redirect: "follow",
                 };
 
