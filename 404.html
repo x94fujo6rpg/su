@@ -8,8 +8,10 @@
        * Configuration goes here
        */
       // Format: https://api.github.com/repos/{owner}/{repo}/issues/
+      let issue_repo_name = "su-db", // repo for post issue
+          user_name = "x94fujo6rpg";
       var GITHUB_ISSUES_LINK =
-        "https://api.github.com/repos/x94fujo6rpg/su-db/issues/";
+        `https://api.github.com/repos/${user_name}/${issue_repo_name}/issues/`;
       var PATH_SEGMENTS_TO_SKIP = 1;
 
       /**
@@ -52,7 +54,9 @@
               message === "Not Found" ||
               !title ||
               !isUrl(title) ||
-              url.hostname !== location.hostname;
+              url.hostname !== location.hostname ||
+              url.href.includes(`${user_name}.github.io/su`) || // current repo
+              url.href.includes(`${user_name}.github.io/${issue_repo_name}`); // repo for post issue
 
             if (isInvalidUrl) {
               console.log("invalid url", {payload, message, title});
